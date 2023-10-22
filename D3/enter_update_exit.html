@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <style>
+            circle {
+                fill: steelblue;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Enter, Update, and Exit Interactive Example</h1>
+        <div id="chart-container"></div>
+        <button id="update-data">Update Data</button>
+
+        <script>
+            // Initial data
+            let data = [ 30, 50, 20, 40 ];
+
+            // Set up the chart dimensions
+            const width = 400;
+            const height = 300;
+
+            // Create an SVG container
+            const svg = d3.select( "#chart-container" )
+                .append( "svg" )
+                .attr( "width", width )
+                .attr( "height", height );
+
+            // Function to update the chart based on the data
+            function updateChart ( data )
+            {
+                // Bind data to circles
+                const circles = svg.selectAll( "circle" )
+                    .data( data );
+
+                // Enter selection: Create new circles for new data
+                circles.enter()
+                    .append( "circle" )
+                    .attr( "cx", ( d, i ) => ( i + 1 ) * ( width / ( data.length + 1 ) ) )
+                    .attr( "cy", height / 2 )
+                    .attr( "r", d => d );
+
+                // Update selection: Update existing circles based on data changes
+                circles
+                    .transition()
+                    .duration( 1000 )
+                    .attr( "r", d => d );
+
+                // Exit selection: Remove circles that no longer have data
+                circles.exit().remove();
+            }
+
+            // Initial chart rendering
+            updateChart( data );
+
+            // Interactive data update
+            d3.select( "#update-data" ).on( "click", function ()
+            {
+                // Simulate data change
+                data = [ 40, 20, 60, 30, 50 ];
+
+                // Update the chart with new data
+                updateChart( data );
+            } );
+        </script>
+    </body>
+
+</html>
