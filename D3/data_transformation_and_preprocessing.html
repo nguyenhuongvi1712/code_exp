@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>Interactive Data Transformation Example</title>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <style>
+            /* Add your CSS styles here */
+        </style>
+    </head>
+
+    <body>
+        <h1>Interactive Data Transformation Example</h1>
+        <div id="chart-container"></div>
+
+        <script>
+            // Sample city data
+            const cities = [
+                { name: "New York", population: 8398748 },
+                { name: "Los Angeles", population: 3990456 },
+                { name: "Chicago", population: 2705994 },
+                { name: "Houston", population: 2320268 },
+                { name: "Phoenix", population: 1680992 },
+            ];
+
+            // Set up the chart dimensions
+            const width = 400;
+            const height = 300;
+
+            // Create an SVG container for the chart
+            const svg = d3.select( "#chart-container" )
+                .append( "svg" )
+                .attr( "width", width )
+                .attr( "height", height );
+
+            // Create a button for data transformation
+            const button = d3.select( "body" )
+                .append( "button" )
+                .text( "Filter Data" )
+                .on( "click", filterData );
+
+            // Function to filter data (e.g., show cities with a population greater than 2 million)
+            function filterData ()
+            {
+                const filteredCities = cities.filter( city => city.population > 2000000 );
+
+                // Clear the previous chart
+                svg.selectAll( "*" ).remove();
+
+                // Display the filtered data
+                svg.selectAll( ".city" )
+                    .data( filteredCities )
+                    .enter()
+                    .append( "text" )
+                    .attr( "class", "city" )
+                    .attr( "x", 10 )
+                    .attr( "y", ( d, i ) => 20 * ( i + 1 ) )
+                    .text( d => d.name );
+            }
+        </script>
+    </body>
+
+</html>
