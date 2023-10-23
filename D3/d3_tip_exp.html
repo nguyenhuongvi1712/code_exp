@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>Interactive D3-tip Example</title>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="d3-tip.js"></script> <!-- Include the D3-tip library -->
+        <style>
+            /* Add your CSS styles here */
+        </style>
+    </head>
+
+    <body>
+        <h1>Interactive D3-tip Example</h1>
+        <div id="chart-container"></div>
+
+        <script>
+            // Sample data
+            const data = [
+                { name: "A", value: 10 },
+                { name: "B", value: 20 },
+                { name: "C", value: 15 },
+                { name: "D", value: 25 }
+            ];
+
+            // Set up the chart dimensions
+            const width = 400;
+            const height = 300;
+
+            // Create an SVG container for the chart
+            const svg = d3.select( "#chart-container" )
+                .append( "svg" )
+                .attr( "width", width )
+                .attr( "height", height );
+
+            // Create a D3-tip instance
+            const tip = d3.tip()
+                .attr( "class", "d3-tip" )
+                .html( d => `Value: ${ d.value }` );
+
+            svg.call( tip );
+
+            // Create bars
+            svg.selectAll( ".bar" )
+                .data( data )
+                .enter()
+                .append( "rect" )
+                .attr( "class", "bar" )
+                .attr( "x", d => d.name )
+                .attr( "y", height )
+                .attr( "width", 40 )
+                .attr( "height", d => height - d.value )
+                .on( "mouseover", tip.show ) // Show tooltip on mouseover
+                .on( "mouseout", tip.hide ); // Hide tooltip on mouseout
+        </script>
+    </body>
+
+</html>
