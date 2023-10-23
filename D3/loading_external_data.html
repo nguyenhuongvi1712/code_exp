@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>Interactive Data Loading Example</title>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <style>
+            /* Add your CSS styles here */
+        </style>
+    </head>
+
+    <body>
+        <h1>Interactive Data Loading Example</h1>
+        <div id="chart-container"></div>
+
+        <script>
+            // Set up the chart dimensions
+            const width = 400;
+            const height = 300;
+
+            // Create an SVG container for the chart
+            const svg = d3.select( "#chart-container" )
+                .append( "svg" )
+                .attr( "width", width )
+                .attr( "height", height );
+
+            // Load data from an external JSON file
+            d3.json( "data.json" ).then( function ( data )
+            {
+                // Create scales for data-to-visual mapping
+                const xScale = d3.scaleBand()
+                    .domain( data.map( d => d.name ) )
+                    .range( [ 0, width ] )
+                    .padding( 0.1 );
+
+                const yScale = d3.scaleLinear()
+                    .domain( [ 0, d3.max( data, d => d.value ) ] )
+                    .nice()
+                    .range( [ height, 0 ] );
+
+                // Create bars
+                svg.selectAll( ".bar" )
+                    .data( data )
+                    .enter()
+                    .append( "rect" )
+                    .attr( "class", "bar" )
+                    .attr( "x", d => xScale( d.name ) )
+                    .attr( "y", d => yScale( d.value ) )
+                    .attr( "width", xScale.bandwidth() )
+                    .attr( "height", d => height - yScale( d.value ) )
+                    .attr( "fill", "steelblue" );
+            } );
+        </script>
+    </body>
+
+</html>
