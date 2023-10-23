@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <style>
+            /* Add your CSS styles here */
+        </style>
+    </head>
+
+    <body>
+        <h1>Interactive Hierarchical Data Example</h1>
+        <div id="chart-container"></div>
+
+        <script>
+            // Sample hierarchical data
+            const data = {
+                name: "CEO",
+                children: [
+                    {
+                        name: "Manager A",
+                        children: [
+                            { name: "Team Lead 1" },
+                            { name: "Team Lead 2" },
+                        ],
+                    },
+                    {
+                        name: "Manager B",
+                        children: [
+                            { name: "Team Lead 3" },
+                        ],
+                    },
+                ],
+            };
+
+            // Set up the chart dimensions
+            const width = 400;
+            const height = 300;
+
+            // Create an SVG container
+            const svg = d3.select( "#chart-container" )
+                .append( "svg" )
+                .attr( "width", width )
+                .attr( "height", height );
+
+            // Create a hierarchical layout
+            const hierarchy = d3.hierarchy( data );
+            const treeLayout = d3.tree().size( [ width - 20, height - 20 ] );
+            const treeData = treeLayout( hierarchy );
+
+            // Create links (lines connecting nodes)
+            svg.selectAll( ".link" )
+                .data( treeData.links() )
+                .enter()
+                .append( "path" )
+                .attr( "class", "link" )
+                .attr( "d", d =>
+                {
+                    return `M${ d.source.x },${ d.source.y }L${ d.target.x },${ d.target.y }`;
+                } );
+
+            // Create nodes (circles for each node)
+            const nodes = svg.selectAll( ".node" )
+                .data( treeData.descendants() )
+                .enter()
+                .append( "g" )
+                .attr( "class", "node" )
+                .attr( "transform", d => `translate(${ d.x },${ d.y })` );
+
+            nodes.append( "circle" )
+                .attr( "r", 10 )
+                .on( "click", click ); // Add interactivity on click
+
+            nodes.append( "text" )
+                .text( d => d.data.name )
+                .attr( "dx", 12 )
+                .attr( "dy", 5 );
+
+            // Function to toggle node children on click
+            function click ( d )
+            {
+                if ( d.children )
+                {
+                    d._children = d.children;
+                    d.children = null;
+                } else
+                {
+                    d.children = d._children;
+                    d._children = null;
+                }
+
+                // Update the layout
+                treeData.descendants();
+                treeData.links();
+
+                // Update the position of nodes and links
+                nodes.transition().duration( 500 ).attr( "transform", d => `translate(${ d.x },${ d.y })` );
+                svg.selectAll( ".link" ).data( treeData.links() ).transition().duration( 500 ).attr( "d", d =>
+                {
+                    return `M${ d.source.x },${ d.source.y }L${ d.target.x },${ d.target.y }`;
+                } );
+            }
+        </script>
+    </body>
+
+</html>
