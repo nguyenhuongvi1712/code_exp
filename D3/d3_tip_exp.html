@@ -5,7 +5,10 @@
         <meta charset="utf-8">
         <title>Interactive D3-tip Example</title>
         <script src="https://d3js.org/d3.v5.min.js"></script>
-        <script src="d3-tip.js"></script> <!-- Include the D3-tip library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.js"
+            integrity="sha512-jaNmuLbHtQ1ND+i63wVvwBd9T2hB3gTnk3x0Pp5R+AJwDdyzMe3t0vQqwUSoI9a/Ol1nscGV/1et4zSwL0P3AA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!-- Include the D3-tip library -->
         <style>
             /* Add your CSS styles here */
         </style>
@@ -47,10 +50,10 @@
                 .enter()
                 .append( "rect" )
                 .attr( "class", "bar" )
-                .attr( "x", d => d.name )
-                .attr( "y", height )
+                .attr( "x", ( d, i ) => i * 60 ) // Adjust the x position to space bars
+                .attr( "y", d => height - d.value )
                 .attr( "width", 40 )
-                .attr( "height", d => height - d.value )
+                .attr( "height", d => d.value )
                 .on( "mouseover", tip.show ) // Show tooltip on mouseover
                 .on( "mouseout", tip.hide ); // Hide tooltip on mouseout
         </script>
